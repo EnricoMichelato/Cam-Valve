@@ -23,7 +23,7 @@ diamValve: the diameter of the base of the Valve
 
 CONSTRAINS
 
-1) rMin needs to be smaller than rMax -> rMin<rMax
+1) rMin needs to be smaller than rMax: rMin<rMax
 
 2) The lift of the Valve is defined as the maximum excursion the Valve has. Since the Valve and the Cam are always in contact, the lift of the Valve is equal to: valveLift = rMax - rMin.
-In order for the sistem to be assembled, the lift cannot exceed the valve length. -> rMax - rMin <= lenValve
+In order for the sistem to be assembled, the lift cannot exceed the valve length: rMax - rMin <= lenValve

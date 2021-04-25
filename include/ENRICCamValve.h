@@ -21,10 +21,8 @@ typedef struct ENRICdevice{
  * @param rMax; //Maximum cam radius
  * @param lenValve; //Valve length
  * @param diamValve; //Valve diameter
- * 
- * 
- * Checks if the parameters allow the device to be assemblated
- * If the parameters don't allow the device to be assemblated, the pointer will be deallocated
+ * //Checks if the parameters allow the device to be assemblated.
+ * //If the parameters don't allow the device to be assemblated, the pointer will be deallocated
  * @return pointer to device
 */
 ENRICdevice * ENRICinitDevice (double rMin, double rMax, double lenValve, double diamValve);
@@ -43,5 +41,39 @@ int ENRICcheckIntegrity (const ENRICdevice * device);
  * @return 1 in case of error
 */
 int ENRICdelete (ENRICdevice * device);
+
+/**
+ * Changes the parameter rMin of the struct pointed by device
+ * @param device pointer to the struct
+ * @param rMin new value
+ * @return 0 if the change was succesfull
+ *      1 in case of error, and sets rMin back to the original value
+*/
+int ENRICsetrMin (ENRICdevice * device, double rMin);
+
+/**
+ * Changes the parameter rMax of the struct pointed by device
+ * @param device pointer to the struct
+ * @param rMax new value
+ * @return 0 if the change was succesfull
+ *      1 in case of error, and sets rMin back to the original value
+*/
+int ENRICsetrMax (ENRICdevice * device, double rMax);
+
+/**
+ * Changes the parameter lenValve of the struct pointed by device
+ * @param device pointer to the struct
+ * @param lenValve new value
+ * @return 0 if the change was succesfull
+ *      1 in case of error, and sets rMin back to the original value
+*/
+int ENRICsetlenValve (ENRICdevice * device, double lenValve);
+
+/**
+ * Creates a vector to SVG to show the new device
+ * @param device pointer to struct to show
+ * @return string deviceSVG
+*/
+string ENRICtoStringSVG (ENRICdevice * device);
 
 #endif

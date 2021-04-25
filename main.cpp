@@ -1,5 +1,11 @@
 #include "ENRICCamValve.h"
 #include <iostream>
+
+#include <fstream>
+#include <streambuf>
+#include <string>
+#include <sstream>
+
 using namespace std;
 
 int main(){
@@ -11,6 +17,14 @@ int main(){
 
     ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve);
 
+    // Create and open a text file
+    ofstream MyFile("CamValve.svg");
+ 
+    // Write to the file
+    MyFile << ENRICtoStringSVG(device);
+ 
+    // Close the file
+    MyFile.close();
 
 return 0;
 }
