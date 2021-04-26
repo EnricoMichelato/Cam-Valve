@@ -20,6 +20,7 @@ int main(){
     double diamValve = 80;
     double Alpha = 0;
     double Gamma = PI / 8;
+    
 
     ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
