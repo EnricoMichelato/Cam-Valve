@@ -13,6 +13,8 @@ typedef struct ENRICdevice{
     double rMax; //Maximum cam radius
     double lenValve; //Valve length
     double diamValve; //Valve diameter
+    double Alpha; // Angle of rotation of the cam
+    double Gamma; // Important parameter of the cam, check README for more info
     } ENRICdevice;
 
 /**
@@ -21,11 +23,13 @@ typedef struct ENRICdevice{
  * @param rMax; //Maximum cam radius
  * @param lenValve; //Valve length
  * @param diamValve; //Valve diameter
+ * @param Alpha; // Angle of rotation of the cam
+ * @param Gamma; // Important parameter of the cam, check README for more info
  * //Checks if the parameters allow the device to be assemblated.
  * //If the parameters don't allow the device to be assemblated, the pointer will be deallocated
  * @return pointer to device
 */
-ENRICdevice * ENRICinitDevice (double rMin, double rMax, double lenValve, double diamValve);
+ENRICdevice * ENRICinitDevice (double rMin, double rMax, double lenValve, double diamValve, double Alpha, double Gamma);
 /**
  * Checks if the parameters allow the device to be built
  * @param device pointer to device
@@ -70,10 +74,78 @@ int ENRICsetrMax (ENRICdevice * device, double rMax);
 int ENRICsetlenValve (ENRICdevice * device, double lenValve);
 
 /**
+ * Creates a string to rapresent a line in SVG, 
+ * The two points that define the line need to be different
+ * @param x1 coordinate x of the first point
+ * @param y1 coordinate y of the first point
+ * @param x2 coordinate x of the second point
+ * @param y2 coordinate y of the second point
+ * @param stroke thickness of the line (default 2) (needs to be > 0)
+ * @param color color of the line (default black)
+ * @param opt more visual options
+ * @return string SVG of the line;
+ *      empty in case of error
+ */
+string ENRIClineSVG(double x1, double y1, double x2, double y2, int stroke = 2, string color = "black", string opt = "");
+
+/**
+ * Creates a string to rapresent an arc in SVG format, 
+ * the angle needs to be > 0
+ * @param cx coordinate x of the center of the arc
+ * @param cy coordinata y of the center of the arc
+ * @param r radius of the arc (needs to be > 1)
+ * @param startAngle starting point of the arc (in degrees)
+ * @param endAngle ending point of the arc (in degrees)
+ * @param stroke thickness arc (need to be > 0 && < r)
+ * @param color arc color
+ * @return SVG string of the arc
+ *      empty in case of error
+ */
+string ENRICarcSVG(double cx, double cy, double r, double startAngle, double endAngle, int stroke = 2, string color = "black");
+
+/**
+ * Creates a string to rapresent a text in SVG format
+ * @param s string to insert
+ * @param x coordinate x of the text
+ * @param y coordinate y of the text
+ * @param rotation angle of rotation of the text (default 0.0)
+ * @param xr coordinate x of the point of rotation (default 0.0)
+ * @param yr coordinate y of the point of rotation (default 0.0)
+ * @param color text color (default black)
+ * @param anchor relative position between text and given point (start, middle, end) 
+ * @param opt more visual option (default empty)
+ * @return SVG string of the text
+ */
+string LBAMTTtextSVG(string s, double x, double y, double rotation = 0.0, double xr = 0.0, double yr = 0.0, string color = "black", string anchor = "middle", string opt = "");
+
+/**
+ * Creates a distance quote between point A and B 
+ * A and B need to be different
+ * Need to create an arrow at the beginning of the file
+ * @param xA coordinate x of A
+ * @param yA coordinate y of A
+ * @param xB coordinate x of B
+ * @param yB coordinate y of B
+ * @param distQuote distance of the quote from AB (needs to be > lQuote)
+ * @param lQuote lenght of the lateral line of the quote (needs to be >= 1)
+ * @param side flag: if true the quote comes at direction theta+90, with theta=arg(AB), if false, the direction is the opposite
+ * @return SVG string of the quote;
+ *      empty in case of error
+ */
+string ENRICquoteDistSVG(double xA, double yA, double xB, double yB, double distQuote, double lQuote, bool side);
+
+/**
  * Creates a vector to SVG to show the new device
  * @param device pointer to struct to show
+ * @param quote 
  * @return string deviceSVG
 */
-string ENRICtoStringSVG (ENRICdevice * device);
+string ENRICtoStringSVG (ENRICdevice * device, bool quote = false);
+
+/**
+ * Creates a string that defines an arrow shaped marked, it is used in the quote
+ * @return SVG string that defines the marker
+ */
+string ENRICarrowMarkerSVG();
 
 #endif

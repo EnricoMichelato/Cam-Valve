@@ -1,5 +1,8 @@
 #include "catch2/catch2.hpp"
 #include "ENRICCamValve.h"
+#ifndef PI
+#define PI 3.14159265
+#endif
 
 
 TEST_CASE("init gives a pointer to a  initialized device", "[ENRICCamValve]") {
@@ -7,8 +10,10 @@ TEST_CASE("init gives a pointer to a  initialized device", "[ENRICCamValve]") {
     double rMax = 15;
     double lenValve = 30;
     double diamValve = 15;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
-    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve);
+    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
     REQUIRE( device != NULL);
 
     REQUIRE( device->rMin == rMin);
@@ -24,6 +29,8 @@ TEST_CASE("checkIntegrity returns 1 when device parameters don't respect contrai
     double rMax = 15;
     double lenValve = 30;
     double diamValve = 15;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
     ENRICdevice * device = new(nothrow) ENRICdevice;
     
@@ -63,8 +70,10 @@ TEST_CASE("init returns NULL if device parameter don't respect constrain", "[ENR
     double rMax = 15;
     double lenValve = 8;
     double diamValve = 15;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
-    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve);
+    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
     REQUIRE( device == NULL);
     
     ENRICdelete(device);    
@@ -75,8 +84,11 @@ TEST_CASE("TEST setrMin when parameters doesn't respect constrains", "[ENRICCamV
     double rMax = 40;
     double lenValve = 100;
     double diamValve = 20;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
-    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve);
+
+    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     REQUIRE( ENRICsetrMin(device,39) == 0 );
     REQUIRE( device->rMin == 39 );
@@ -92,8 +104,10 @@ TEST_CASE("TEST setrMax when parameters doesn't respect constrains", "[ENRICCamV
     double rMax = 40;
     double lenValve = 100;
     double diamValve = 20;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
-    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve);
+    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     REQUIRE( ENRICsetrMax(device,26) == 0 );
     REQUIRE( device->rMax == 26 );
@@ -109,8 +123,10 @@ TEST_CASE("TEST lenValve when parameters doesn't respect constrains", "[ENRICCam
     double rMax = 40;
     double lenValve = 100;
     double diamValve = 20;
+    double Alpha = 0;
+    double Gamma = PI / 6;
 
-    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve);
+    ENRICdevice * device = ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     REQUIRE( ENRICsetlenValve(device,16) == 0 );
     REQUIRE( device->lenValve == 16 );
