@@ -15,23 +15,20 @@ using namespace std;
 int main(){
 
     double rMin = 50;
-    double rMax = 75;
+    double rMax = 65;
     double lenValve = 200;
     double diamValve = 80;
-    double Alpha = 0;
+    double Alpha = 0*PI;
     double Gamma = PI / 8;
     
 
     ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
-    // Create and open a text file
-    ofstream MyFile("CamValve.svg");
- 
-    // Write to the file
-    MyFile << ENRICtoStringSVG(device, true);
- 
-    // Close the file
-    MyFile.close();
+    ENRICsaveToFile(ENRICtoStringSVG(device, true), "CamValveOriginal.svg");
+
+    ENRICsaveToFile(ENRICloadFromFile("CamValveOriginal.svg"), "CamValveProve.svg");
+
+    ENRICsaveToFile(ENRICAnimationtoStringSVG(device, true), "CamValveAnimation.svg");
 
 return 0;
 }

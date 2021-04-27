@@ -1,6 +1,12 @@
 #ifndef CAMVALVE
 #define CAMVALVE
 
+#include <vector>       //variable lenght vector
+#include <fstream>      //file
+#include <streambuf>    //file
+#include <sstream>      //file
+#include <cstdio>
+
 #include <iostream>
 #include <math.h>
 #include <new>
@@ -104,6 +110,21 @@ string ENRIClineSVG(double x1, double y1, double x2, double y2, int stroke = 2, 
 string ENRICarcSVG(double cx, double cy, double r, double startAngle, double endAngle, int stroke = 2, string color = "black");
 
 /**
+ * Creates a string to rapresent an arc in SVG format, with a beautiful animation
+ * the angle needs to be > 0
+ * @param cx coordinate x of the center of the arc
+ * @param cy coordinata y of the center of the arc
+ * @param r radius of the arc (needs to be > 1)
+ * @param startAngle starting point of the arc (in degrees)
+ * @param endAngle ending point of the arc (in degrees)
+ * @param stroke thickness arc (need to be > 0 && < r)
+ * @param color arc color
+ * @return SVG string of the arc
+ *      empty in case of error
+ */
+string ENRICAnimationarcSVG(double cx, double cy, double r, double startAngle, double endAngle, int stroke = 2, string color = "black");
+
+/**
  * Creates a string to rapresent a text in SVG format
  * @param s string to insert
  * @param x coordinate x of the text
@@ -136,9 +157,9 @@ string ENRICquoteDistSVG(double xA, double yA, double xB, double yB, double dist
 
 /**
  * Creates a vector to SVG to show the new device
- * @param device pointer to struct to show
- * @param quote 
- * @return string deviceSVG
+ * @param device pointer to the device struct to show
+ * @param quote if true includes the quote of the device in the drawing, not implemented yet
+ * @return String that rapresents a SVG device
 */
 string ENRICtoStringSVG (ENRICdevice * device, bool quote = false);
 
@@ -147,5 +168,38 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote = false);
  * @return SVG string that defines the marker
  */
 string ENRICarrowMarkerSVG();
+
+/**
+ * Divides a string using a second little string
+ * @param s string to divide
+ * @param delimeter little string that I need to look for
+ * @return divided string put in a vector
+*/
+vector<string> ENRICsplitString (string s, string delimiter);
+
+/**
+ * Saves on a file the passed string
+ * @param stringSVG string to save
+ * @param fileName name of the file
+ * @return 0 if it is succesfull
+ *      1 in case of error
+*/
+int ENRICsaveToFile(string s, string fileName);
+
+/**
+ * Reads a file and gives back a string
+ * @param fileName name of the file, extension must be .svg
+ * @return string from the file, empty in case of error
+ */
+string ENRICloadFromFile(string fileName);
+
+/**
+ * Creates a vector to SVG to show the new device, with a beautiful animation
+ * @param device pointer to the device struct to show
+ * @param quote if true includes the quote of the device in the drawing, not implemented yet
+ * @return String that rapresents a SVG device
+*/
+string ENRICAnimationtoStringSVG (ENRICdevice * device, bool quote = false);
+
 
 #endif

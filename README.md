@@ -21,6 +21,10 @@ lenValve: the principal length of the Valve
 
 diamValve: the diameter of the base of the Valve
 
+Alpha: the angle of rotation of the cam
+
+Gamma: the angle of the sector of the external circle of the cam
+
 CONSTRAINS
 
 1) rMin needs to be smaller than rMax: rMin<rMax
