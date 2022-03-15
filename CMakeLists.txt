@@ -10,7 +10,9 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(mainEntry main.cpp)
 target_include_directories(mainEntry PRIVATE include)
 # Class A is not a library: its source file needs to be included in the target sources
-target_sources(mainEntry PRIVATE src/ENRICCamValve.cpp)
+target_sources(mainEntry PRIVATE src/ENRICCamValve.cpp
+src/ENRICengine.cpp
+src/Gear.cpp)
 target_link_libraries(mainEntry)
 
 # TESTS SECTION

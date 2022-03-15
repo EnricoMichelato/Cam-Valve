@@ -36,6 +36,7 @@ typedef struct ENRICdevice{
  * @return pointer to device
 */
 ENRICdevice * ENRICinitDevice (double rMin, double rMax, double lenValve, double diamValve, double Alpha, double Gamma);
+
 /**
  * Checks if the parameters allow the device to be built
  * @param device pointer to device
@@ -137,7 +138,7 @@ string ENRICAnimationarcSVG(double cx, double cy, double r, double startAngle, d
  * @param opt more visual option (default empty)
  * @return SVG string of the text
  */
-string LBAMTTtextSVG(string s, double x, double y, double rotation = 0.0, double xr = 0.0, double yr = 0.0, string color = "black", string anchor = "middle", string opt = "");
+string ENRICtextSVG(string s, double x, double y, double rotation = 0.0, double xr = 0.0, double yr = 0.0, string color = "black", string anchor = "middle", string opt = "");
 
 /**
  * Creates a distance quote between point A and B 
@@ -200,6 +201,5 @@ string ENRICloadFromFile(string fileName);
  * @return String that rapresents a SVG device
 */
 string ENRICAnimationtoStringSVG (ENRICdevice * device, bool quote = false);
-
 
 #endif
