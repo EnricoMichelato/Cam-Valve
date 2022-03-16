@@ -121,6 +121,14 @@ int g_export_svg(Gear* gear, string filename, bool with_measures = false, bool h
 int g_export_connection(Connection* connection, string fname);
 
 /**
+* Creates a svg string with a chain of connections
+* 
+* @param connection
+* @param header header of file
+*/
+string g_tostring_connection(Connection* connection, bool header = false);
+
+/**
 * Gets the gear ratio beteen two gears 
 * 
 * @param g1 gear1

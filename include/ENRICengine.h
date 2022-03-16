@@ -115,10 +115,11 @@ bool ENRICengineCompare(ENRICengine * a, ENRICengine * b);
  * @param cyShaft y coordinate of the shaft's axis within the drawing area
  * @param quote flag: if true quotes the distribution (default false)
  * @param header flag: if true add the SVG header (default false)
+ * @param fileName flag: if true add the SVG header (default false)
  * @return string distributionSVG;
  *      EMPTY if error occures
 */
-string ENRICdistributionToStringSVG (ENRICdistribution * distribution, bool quote = false);
+string ENRICdistributionToStringSVG (ENRICdistribution * distribution, bool quote = false, bool header = false);
 
 /**
  * Create an SVG string to represent the engine

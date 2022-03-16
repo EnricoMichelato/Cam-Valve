@@ -11,10 +11,15 @@ ENRICdistribution * ENRICinitDistribution(double reference_radius, double axle_r
     double Alpha = 0 * PI;
     double Gamma = PI /8;
 
-    ret->cam = ENRICinitDevice(rMin, rMax, diamValve, lenValve, Alpha, Gamma);
+    ret->cam = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
     ret->gearCenter = g_init(true, reference_radius, axle_radius, teeth, 20);
     ret->gearLeft = g_init_for_connection(ret->gearCenter, true, reference_radius, axle_radius);
-    ret->gearRight = g_init_for_connection(ret->gearCenter, true, reference_radius, axle_radius);
+    ret->gearRight = g_init_for_connection(ret->gearLeft, true, reference_radius, axle_radius);
+
+    if (ret->gearCenter == NULL || ret->gearLeft == NULL) {
+     cout << "Gear is null" << endl;
+        return 0;
+    }
 
     return ret;
 }
@@ -33,19 +38,29 @@ ENRICengine * ENRICinitEngine(const int n, double reference_radius, double axle_
     return ret;
 }
 
-string ENRICdistributionToStringSVG(ENRICdistribution * distribution, bool quote){
+string ENRICdistributionToStringSVG(ENRICdistribution * distribution, bool quote, bool header){
 
     if(distribution == NULL) return "";
 
     string distributionSVG = "";
 
-    distributionSVG += ENRICtoStringSVG(distribution->cam, false);
+    distributionSVG += ENRICtoStringSVG(distribution->cam);
 
-    distributionSVG += g_to_svg(distribution->gearCenter, false, false, 60);
+    Connection* conn = g_init_connection(distribution->gearCenter, distribution->gearLeft, 0);
 
-    distributionSVG += g_to_svg(distribution->gearLeft, false, false, 60);
+    Connection* conn2 = g_init_connection(distribution->gearLeft, distribution->gearRight, 0);
 
-    distributionSVG += g_to_svg(distribution->gearRight, false, false, 60);
+    g_set_next_connection(&conn, conn2);
+    
+
+    distributionSVG += "\n" + g_tostring_connection(conn);
+
+    if(header){
+        distributionSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n\n" + distributionSVG + "</svg>\n";
+    
+    }
+
 
     return distributionSVG;
 }
@@ -185,11 +200,11 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 if(argc >= 6){ //requested export
                     if(sargv[4] == "-e"){ //export
                         cout << "DEBUG: Exporting distribution on file " << sargv[5] << endl;
-                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution), sargv[5]);
+                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, false, true), sargv[5]);
                     }
                     else if(sargv[4] == "-eq"){ //export with quotes
                         cout << "DEBUG: Exporting distribution with quotes on file " << sargv[5] << endl;
-                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true), sargv[5]);
+                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true, true), sargv[5]);
                     }
                     cout << "DEBUG: Export successful" << endl;
                 }
@@ -213,8 +228,8 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                         cout << "DEBUG: Unable to init distribution with the given params, see README and check the constraints" << endl;
                         return NULL;
                     } 
-                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution), sargv[3]);
-                    else ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true), sargv[3]);
+                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, false, true), sargv[5]);
+                    else ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true, true), sargv[5]);
                     cout << "DEBUG: Export successful" << endl;
                     
                     return ret;

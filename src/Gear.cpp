@@ -389,6 +389,69 @@ int g_export_connection(Connection* connection, string fname) {
   return 0;
 }
 
+string g_tostring_connection(Connection* connection, bool header) {
+
+
+  if (connection == NULL)
+    return "";
+
+  if (connection->first == NULL || connection->second == NULL)
+    return "";
+
+  double width = 640;
+  double height = 480;
+
+  stringstream file;
+
+  if(header){
+    file << "<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n";
+    file << "<svg version='1.1' viewBox='0 0 640 480' xmlns='http://www.w3.org/2000/svg' style='background: white' >\n";
+  }
+  file << "<g transform='translate(" << width / 6 << " " << height / 4 << ")' >\n";
+
+  double x = 0, y = 0;
+  double adjustment_angle = 0;
+  double rotation_speed = 5;
+  while (true) {
+    // Draw first gear
+    file << "<g transform='translate(" << x << " " << y << ") '>\n";
+    file << g_to_svg(connection->first, false, false, rotation_speed);
+    file << "</g>";
+    // Calculate center of second gear
+    if (connection->first->external_gear && connection->second->external_gear) {
+      x += connection->first->reference_radius + connection->second->reference_radius;
+      adjustment_angle = 180 - connection->angle;
+    } else {
+      x += connection->first->reference_radius - connection->second->reference_radius;
+      adjustment_angle = 0;
+    }
+    // Rotate the gear basing on connection angle
+    _g_rotate_point(&x, &y, G_PI / 180 * connection->angle);
+
+    rotation_speed *= g_get_gear_ratio(connection->first, connection->second);
+    if (connection->first->external_gear && connection->second->external_gear)
+      rotation_speed *= -1;
+
+    file << "<g transform='translate(" << x << " " << y << ") '>\n";
+    file << "<g transform='rotate(" << adjustment_angle << " 0 0)'>\n";
+    file << g_to_svg(connection->second, false, false, rotation_speed);
+    file << "</g>\n";
+    file << "</g>\n";
+
+    if (connection->next == NULL)
+      break;
+    else
+      connection = connection->next;
+  }
+
+  file << "</g>\n";
+
+  if(header) file << "</svg>";
+
+  return file.str();
+
+}
+
 string _g_get_svg_arg(string line, string arg) {
   size_t index1 = 0;
   size_t index2 = 0;

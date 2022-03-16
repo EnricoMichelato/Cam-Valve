@@ -160,9 +160,10 @@ string ENRICquoteDistSVG(double xA, double yA, double xB, double yB, double dist
  * Creates a vector to SVG to show the new device
  * @param device pointer to the device struct to show
  * @param quote if true includes the quote of the device in the drawing, not implemented yet
+ * @param header header of the file
  * @return String that rapresents a SVG device
 */
-string ENRICtoStringSVG (ENRICdevice * device, bool quote = false);
+string ENRICtoStringSVG (ENRICdevice * device, bool quote = false, bool header = false);
 
 /**
  * Creates a string that defines an arrow shaped marked, it is used in the quote

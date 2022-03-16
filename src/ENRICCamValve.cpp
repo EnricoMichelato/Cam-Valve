@@ -255,7 +255,7 @@ string ENRICarrowMarkerSVG(){
             "</defs>\n\n";
 }
 
-string ENRICtoStringSVG (ENRICdevice * device, bool quote){
+string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
     string deviceSVG = "";
     double xC, yC; //cooridnates center of rotation (internal circle of the cam)
     double ValveStartY; // starting point to draw the valve
@@ -354,9 +354,10 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote){
         }
     }
     //defining file and sheet dimension
-    deviceSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
-    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n\n" + deviceSVG + "</svg>\n";
-
+    if(header){
+        deviceSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n\n" + deviceSVG + "</svg>\n";
+    }
     return deviceSVG;
 }
 

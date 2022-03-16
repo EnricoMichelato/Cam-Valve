@@ -27,21 +27,25 @@ int main(int argc, char ** argv){
     double Gamma = PI / 8;
 
     double axle_radius = rMin;
-    double reference_radius = rMax*2;
+    double reference_radius = rMax;
     double teeth = 30;
     
 
-    ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
+    //ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     ENRICdistribution * distribution = ENRICinitDistribution(reference_radius, axle_radius, teeth);
 
-    ENRICsaveToFile(ENRICtoStringSVG(device, true), "CamValveOriginal.svg");
+    //Gear * gear = g_init(true, reference_radius, axle_radius, teeth);
 
-    ENRICsaveToFile(g_to_svg(distribution->gearCenter, false, false, 60), "GearProva.svg");
+    //ENRICsaveToFile(g_to_svg(gear), "Gear.svg");
 
-    ENRICsaveToFile(ENRICAnimationtoStringSVG(device, true), "CamValveAnimation.svg");
+    //ENRICdistributionToStringSVG(distribution, "Connection.svg");
 
-    ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false), "Distribution.svg");   
+    //ENRICsaveToFile(ENRICtoStringSVG(device, true), "CamValveOriginal.svg");
+
+    //ENRICsaveToFile(ENRICAnimationtoStringSVG(device, true), "CamValveAnimation.svg");
+
+    ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false, true), "Distribution.svg");   
 
 return 0;
 }
