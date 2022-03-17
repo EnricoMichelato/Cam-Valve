@@ -113,7 +113,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 }
                 cout << "DEBUG: Import successful" << endl;
 
-                if(argc >= 8){ //requested import + export
+                if(argc >= 6){ //requested import + export
                     if(sargv[4] == "-e"){ //export
                         cout << "DEBUG: Exporting device on file " << sargv[7] << endl;
                         ENRICsaveToFile(ENRICtoStringSVG(ret->device), sargv[7]);
@@ -135,7 +135,8 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 return ret;
             }
 
-            else if(argc >= 13){// only export with params
+            else if(argc >= 11){// only export with params
+            // ./mainentry -device -i /path_da_cui_importare -eq /path_dove_esportare -p <param>*6
                 if(sargv[2] == "-e" || sargv[2] == "-eq"){ 
                     cout << "DEBUG: Exporting device with params on file " << sargv[5] << endl;
                     if(sargv[6] != "-p"){ //params not found
@@ -143,7 +144,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                         return NULL;
                     } 
 
-                    if(argc == 12) ret->device = ENRICinitDevice(stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]), stod(sargv[11]), stod(sargv[12]));
+                    if(argc == 11) ret->device = ENRICinitDevice(stod(sargv[5]), stod(sargv[6]), stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]));
 
                     if(ret->device == NULL) { //params don't match constraints
                         cout << "DEBUG: Unable to init device with the given params, see README and check the constraints" << endl;
@@ -156,20 +157,21 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                     
                     return ret;
                 }
+                // ./mainentry -device -i /path_da_cui_importare -eq /path_dove_esportare -p <param>*6
                 else if(sargv[2] == "-ea"){
-                    cout << "DEBUG: Exporting device animated with params on file " << sargv[7] << endl;
-                    if(sargv[8] != "-p"){ //params not found
+                    cout << "DEBUG: Exporting device animated with params on file " << sargv[3] << endl;
+                    if(sargv[4] != "-p"){ //params not found
                         cout << "DEBUG: Params not found or wrong syntax" << endl;
                         return NULL;
                     } 
-                    if(argc == 14) ret->device = ENRICinitDevice(stod(sargv[9]), stod(sargv[10]), stod(sargv[11]), stod(sargv[12]), stod(sargv[13]), stod(sargv[14]));
+                    if(argc == 11) ret->device = ENRICinitDevice(stod(sargv[5]), stod(sargv[6]), stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]));
 
                     if(ret->device == NULL) { //params don't match constraints
                         cout << "DEBUG: Unable to init device with the given params, see README and check the constraints" << endl;
                         return NULL;
                     }
                     
-                    ENRICsaveToFile(ENRICAnimationtoStringSVG(ret->device), sargv[7]);
+                    ENRICsaveToFile(ENRICAnimationtoStringSVG(ret->device), sargv[3]);
                     cout << "DEBUG: Export successful" << endl;
 
                     return ret;
@@ -214,6 +216,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 return ret;
             }
 
+            // ./mainentry -distribution -i /path_da_cui_importare -eq/ea /path_dove_esportare -p <param>*3
             else if(argc >= 8){
                 if(sargv[2] == "-e" || sargv[2] == "-eq"){ //export with params
                     cout << "DEBUG: Exporting distribution with params on file " << sargv[3] << endl;
@@ -231,21 +234,6 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                     if(sargv[2] == "-e") ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, false, true), sargv[5]);
                     else ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true, true), sargv[5]);
                     cout << "DEBUG: Export successful" << endl;
-                    
-                    return ret;
-                }
-                else if(sargv[2] == "-ea"){
-                    cout << "DEBUG: Exporting distribution animated with params on file " << sargv[5] << endl;
-                    if(sargv[6] != "-p"){ //params not found
-                        cout << "DEBUG: Params not found or wrong syntax" << endl;
-                        return NULL;
-                    } 
-                    if(argc == 10) ret->distribution = ENRICinitDistribution(stod(sargv[7]), stod(sargv[8]), stod(sargv[9]));
-
-                    if(ret->distribution == NULL) { //params don't match constraints
-                        cout << "DEBUG: Unable to init distribution with the given params, see README and check the constraints" << endl;
-                        return NULL;
-                    }
                     
                     return ret;
                 }
