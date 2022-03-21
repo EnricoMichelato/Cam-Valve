@@ -112,7 +112,7 @@ string ENRICarcSVG(double cx, double cy, double r, double startAngle, double end
     arc += "A " + to_string(r) + " " + to_string(r) + " 0 0 1 " + to_string(x4) + " " + to_string(y4) + "\n";
     arc += "L " + to_string(cx) + " " + to_string(cy) + "\n";
     arc += "Z\"\n";
-    arc += "style=\"fill:" + color + "\" >\n</path>";
+    arc += "style=\"fill:" + color + "\" ></path>\n";
 
     return arc;
 }
@@ -252,7 +252,7 @@ string ENRICarrowMarkerSVG(){
             "orient=\"auto-start-reverse\">\n"
             "<path d=\"M 0 1.5 L 10 5 L 0 8.5 z\" />\n"
             "</marker>\n"
-            "</defs>\n\n";
+            "</defs>\n";
 }
 
 string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
@@ -260,7 +260,7 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
     double xC, yC; //cooridnates center of rotation (internal circle of the cam)
     double ValveStartY; // starting point to draw the valve
 
-    //Defining parameters
+    //Defining start parameters
     xC = 400;
     yC = 200;
     ValveStartY = 0;
@@ -270,28 +270,27 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
     double PCest1y = yC-device->rMax*sin(device->Gamma-device->Alpha);
     double PCest2x = device->rMax*cos(-device->Alpha-device->Gamma)+xC;
     double PCest2y = yC-device->rMax*sin(-device->Alpha-device->Gamma);
-    double PCint1x = device->rMin*cos(-device->Alpha+PI/2)+xC;
-    double PCint1y = yC-device->rMin*sin(-device->Alpha+PI/2);
     double PCint2x = device->rMin*cos(-device->Alpha-PI/2)+xC;
     double PCint2y = yC-device->rMin*sin(-device->Alpha-PI/2);
+    double PCint1x = device->rMin*cos(-device->Alpha+PI/2)+xC;
+    double PCint1y = yC-device->rMin*sin(-device->Alpha+PI/2);
 
     //Making the arrows for the quotes of the device
     deviceSVG += ENRICarrowMarkerSVG(); 
-    deviceSVG += "\n"; 
 
     //Building the cam
         //Internal circle of the cam: I just need a section of the circle, so I just draw an arc
     deviceSVG += ENRICarcSVG(xC, yC, device->rMin, device->Alpha*180/PI+90, device->Alpha*180/PI+270, device->rMin-1, "grey");
-    deviceSVG += "\n"; 
+
         //External circle of the cam: I just need a section of the circle, so I just draw an arc
     deviceSVG += ENRICarcSVG(xC, yC, device->rMax, device->Alpha*180/PI-(device->Gamma)*180/PI, device->Alpha*180/PI+(device->Gamma)*180/PI, device->rMax-1, "grey");   
     deviceSVG += "\n";
     // Making a polygon to fill the empty space of the cam
-    deviceSVG += "<polygon points=\"" + to_string(PCest1x) + ", " + to_string(PCest1y) + " " +
-                                      to_string(PCest2x) + ", " + to_string(PCest2y) + " " +
-                                      to_string(PCint2x) + ", " + to_string(PCint2y) + " " +
-                                      to_string(PCint1x) + ", " + to_string(PCint1y) + " ";
-    deviceSVG += "\" style=\"fill:grey\" >\n</polygon>"; //defining colour
+    deviceSVG += "<polygon points=\" " + to_string(PCest1x) + " , " + to_string(PCest1y) + " " +
+                                      to_string(PCest2x) + " , " + to_string(PCest2y) + " " +
+                                      to_string(PCint2x) + " , " + to_string(PCint2y) + " " +
+                                      to_string(PCint1x) + " , " + to_string(PCint1y) + " ";
+    deviceSVG += " \" style=\"fill:grey\" ></polygon>\n\n"; //defining colour
     
     //Valve
         //First rectangle componing the valve
@@ -316,11 +315,11 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
     //First rectangle componing the valve            
     deviceSVG += "<rect x=\"" + to_string(xC-(device->lenValve)/20) + "\" y=\"" + to_string(ValveStartY) + "\" "; //defining starting point
     deviceSVG += "width=\"" + to_string((device->lenValve)/10) + "\" height=\"" + to_string(device->lenValve) + "\" "; //defining dimension
-    deviceSVG += "style=\"fill:black\" >\n</rect>"; //defining colour
+    deviceSVG += "style=\"fill:black\" ></rect>\n\n"; //defining colour
     //Second rectangle componing the valve
     deviceSVG += "<rect x=\"" + to_string(xC-(device->diamValve)/2) + "\" y=\"" + to_string(device->lenValve+ValveStartY) + "\" "; //defining starting point
     deviceSVG += "width=\"" + to_string(device->diamValve) + "\" height=\"" + to_string((device->lenValve)/10) + "\" "; //defining dimension
-    deviceSVG += "style=\"fill:black\" >\n</rect>"; //defining colour
+    deviceSVG += "style=\"fill:black\" ></rect>\n\n"; //defining colour
 
     // Making the quote of the device
     if(quote){
@@ -355,8 +354,8 @@ string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
     }
     //defining file and sheet dimension
     if(header){
-        deviceSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n\n" + deviceSVG + "</svg>\n";
+        deviceSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n" + deviceSVG + "\n</svg>\n";
     }
     return deviceSVG;
 }
@@ -373,6 +372,7 @@ vector<string> ENRICsplitString (string s, string delimiter){
     }
 
     res.push_back (s.substr (pos_start)); //saves the remaning part of the vector when the delimiter cannot be found
+    //cout << res;
     return res;
 }
 
@@ -548,3 +548,61 @@ string ENRICAnimationtoStringSVG (ENRICdevice * device, bool quote){
     return deviceSVG;
 }
 
+ENRICdevice * ENRICdeviceFromString(string s){
+
+    //split to extract strings with the different objects
+    vector<string> vTot = ENRICsplitString(s, ">\n\n<");
+    
+    //erase the strings that aren't circles or rectangles
+    int i = 0;
+    while(i < vTot.size()){
+        if(vTot[i][0] != 'r' && vTot[i][0] != 'p') vTot.erase(vTot.begin() + i);
+        else i++;
+    }
+
+    string control = "prr";
+    //check number of figure
+    if(vTot.size()%control.size() != 0 || vTot.size() < control.size()) return NULL;
+    //check if the figure succession is correct
+    for(i = 0; i < vTot.size(); i++) if(vTot[i][0] != control[i%control.size()]) return NULL;
+
+    //Defining start parameters
+    double xC = 400;
+    double yC = 200;
+    double ValveStartY = 0;
+
+    //parameters extraction
+    double rMin;
+    double rMax;
+    double lenValve;
+    double diamValve;
+    double Alpha;
+    double Gamma;
+
+    vector<string> vTmp;
+    //rMin, rMax, Alpha and Gamma
+    vTmp = ENRICsplitString(vTot[0],"\"");
+
+    //eliminate ","
+    int j = 0;
+    while(j < vTmp.size()){
+        if(vTmp[j][0] == ',') vTot.erase(vTot.begin() + j);
+        else j++;
+    }
+
+    double temp = atan2(yC - atof(vTmp[2].c_str()), atof(vTmp[1].c_str()) - xC);
+    rMax = (atof(vTmp[1].c_str()) - xC)/(cos(temp));
+    Alpha = PI/2 - atan2(yC - atof(vTmp[8].c_str()), atof(vTmp[7].c_str()) - xC);
+    rMin = (atof(vTmp[5].c_str()) - xC)/(cos(-Alpha - PI/2));
+    Gamma = temp + Alpha;
+
+    //lenValve
+    vTmp = ENRICsplitString(vTot[1],"\"");
+    lenValve = atof(vTmp[7].c_str());
+
+    //lenValve
+    vTmp = ENRICsplitString(vTot[2],"\"");
+    diamValve = atof(vTmp[5].c_str());
+
+    return ENRICinitDevice(rMin, rMax, lenValve, diamValve, Alpha, Gamma);
+}

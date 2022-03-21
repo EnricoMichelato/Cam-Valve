@@ -31,7 +31,7 @@ int main(int argc, char ** argv){
     double teeth = 30;
     
 
-    //ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
+    ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     ENRICdistribution * distribution = ENRICinitDistribution(reference_radius, axle_radius, teeth);
 
@@ -41,11 +41,13 @@ int main(int argc, char ** argv){
 
     //ENRICdistributionToStringSVG(distribution, "Connection.svg");
 
-    //ENRICsaveToFile(ENRICtoStringSVG(device, true), "CamValveOriginal.svg");
+    ENRICsaveToFile(ENRICtoStringSVG(device, true, true), "CamValveOriginal.svg");
 
-    //ENRICsaveToFile(ENRICAnimationtoStringSVG(device, true), "CamValveAnimation.svg");
+    //ENRICsaveToFile(ENRICAnimationtoStringSVG(device), "CamValveAnimation.svg");
 
-    ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false, true), "Distribution.svg");   
+    ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false, true), "Distribution.svg");  
+
+    ENRICsplitString(ENRICtoStringSVG(device, false, true), ">\n\n<");
 
 return 0;
 }

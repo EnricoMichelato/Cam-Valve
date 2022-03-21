@@ -203,4 +203,12 @@ string ENRICloadFromFile(string fileName);
 */
 string ENRICAnimationtoStringSVG (ENRICdevice * device, bool quote = false);
 
+/**
+ * Read an SVG string and return the device associated to the drawing
+ * @param s string to be analized, must have the same format of the one created by LBAMTTdeviceToStringSVG
+ * @return pointer to device device if the function succeed;
+ *      NULL if error occures
+ */
+ENRICdevice * ENRICdeviceFromStringSVG(string s);
+
 #endif
