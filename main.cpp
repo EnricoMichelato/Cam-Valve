@@ -17,7 +17,7 @@ using namespace std;
 
 int main(int argc, char ** argv){
 
-    ENRICcommandLineParam(argc, argv);
+    //ENRICcommandLineParam(argc, argv);
 
     double rMin = 50;
     double rMax = 70;
@@ -30,7 +30,6 @@ int main(int argc, char ** argv){
     double reference_radius = rMax;
     double teeth = 30;
     
-
     ENRICdevice * device = ENRICinitDevice (rMin, rMax, lenValve, diamValve, Alpha, Gamma);
 
     ENRICdistribution * distribution = ENRICinitDistribution(reference_radius, axle_radius, teeth);
@@ -41,13 +40,11 @@ int main(int argc, char ** argv){
 
     //ENRICdistributionToStringSVG(distribution, "Connection.svg");
 
-    ENRICsaveToFile(ENRICtoStringSVG(device, true, true), "CamValveOriginal.svg");
+    ENRICsaveToFile(ENRICtoStringSVG(device, true, true), "CamValveQuote.svg");
 
     //ENRICsaveToFile(ENRICAnimationtoStringSVG(device), "CamValveAnimation.svg");
 
-    ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false, true), "Distribution.svg");  
-
-    ENRICsplitString(ENRICtoStringSVG(device, false, true), ">\n\n<");
+    //ENRICsaveToFile(ENRICdistributionToStringSVG(distribution, false, true), "Distribution.svg");  
 
 return 0;
 }

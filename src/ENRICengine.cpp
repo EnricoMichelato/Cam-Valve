@@ -105,7 +105,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                     return NULL;
                 } 
 
-                ret->device = ENRICdeviceFromStringSVG(file);
+                //ret->device = ENRICdeviceFromStringSVG(file);
 
                 if(ret->device == NULL) {  //string isn't a device
                     cout << "DEBUG: Can't import device from file " << sargv[3] <<", wrong format" << endl;
