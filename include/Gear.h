@@ -125,11 +125,13 @@ int g_export_connection(Connection* connection, string fname);
 * 
 * @param connection
 * @param header header of file
+* @param cxShaft x coordinate of the center of the first gear of the connection
+* @param cxShaft y coordinate of the center of the first gear of the connection
 */
-string g_tostring_connection(Connection* connection, bool header = false);
+string g_tostring_connection(Connection* connection, double cxShaft, double cyShaft, bool header = false);
 
 /**
-* Gets the gear ratio beteen two gears 
+* Gets the gear ratio between two gears 
 * 
 * @param g1 gear1
 * @param g2 gear2

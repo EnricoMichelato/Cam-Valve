@@ -71,8 +71,11 @@ ENRICdistribution * ENRICinitDistribution (double reference_radius, double axle_
  * It checks if the parameters follow the constraints given to the device
  * If the parameters violets the constraints, the structure is DEALLOCATED.
  * @param n number of distributions of the engine
+ * @param reference_radius reference radius of the gears of the engine
+ * @param axle_radius axle radius of the gears
+ * @param teeth number teeth of each gear
 */
-ENRICengine * ENRICinitEngine (const int n);
+ENRICengine * ENRICinitEngine (const int n, double reference_radius, double axle_radius, int teeth);
 
 /**
  * DEALLOCATE the structure pointed by the given pointer
@@ -119,17 +122,16 @@ bool ENRICengineCompare(ENRICengine * a, ENRICengine * b);
  * @return string distributionSVG;
  *      EMPTY if error occures
 */
-string ENRICdistributionToStringSVG (ENRICdistribution * distribution, bool quote = false, bool header = false);
+string ENRICdistributionToStringSVG (ENRICdistribution * distribution, double cxShaft, double cyShaft, bool quote = false, bool header = false);
 
 /**
  * Create an SVG string to represent the engine
  * @param engine pointer to structure to be represented
- * @param quote flag: if true quotes the engine (default false)
- * @param header flag: if true add the SVG header (default true)
+ * @param cyShaft y coordinate of the center of the first gear
  * @return string engineSVG;
  *      EMPTY if error occures
 */
-string ENRICengineToStringSVG(ENRICengine * engine, bool quote = false, bool header = true);
+string ENRICengineToStringSVG(ENRICengine * engine, double cyShaft);
 
 /**
  * Read an SVG string and return the engine associated to the drawing

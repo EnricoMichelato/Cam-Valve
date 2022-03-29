@@ -389,7 +389,7 @@ int g_export_connection(Connection* connection, string fname) {
   return 0;
 }
 
-string g_tostring_connection(Connection* connection, bool header) {
+string g_tostring_connection(Connection* connection, double cxShaft, double cyShaft, bool header) {
 
 
   if (connection == NULL)
@@ -407,7 +407,7 @@ string g_tostring_connection(Connection* connection, bool header) {
     file << "<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n";
     file << "<svg version='1.1' viewBox='0 0 640 480' xmlns='http://www.w3.org/2000/svg' style='background: white' >\n";
   }
-  file << "<g transform='translate(" << width / 6 << " " << height / 4 << ")' >\n";
+  file << "<g transform='translate(" << cxShaft << " " << cyShaft << ")' >\n";
 
   double x = 0, y = 0;
   double adjustment_angle = 0;

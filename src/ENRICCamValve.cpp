@@ -255,14 +255,14 @@ string ENRICarrowMarkerSVG(){
             "</defs>\n";
 }
 
-string ENRICtoStringSVG (ENRICdevice * device, bool quote, bool header){
+string ENRICtoStringSVG (ENRICdevice * device, double cxShaft, double cyShaft, bool quote, bool header){
     string deviceSVG = "";
     double xC, yC; //cooridnates center of rotation (internal circle of the cam)
     double ValveStartY; // starting point to draw the valve
 
     //Defining start parameters
-    xC = 400;
-    yC = 200;
+    xC = cxShaft;
+    yC = cyShaft;
     ValveStartY = 0;
 
     // Calculating the 4 point needed to properly draw the cam, check README for more info
@@ -377,7 +377,7 @@ vector<string> ENRICsplitString (string s, string delimiter){
 }
 
 int ENRICsaveToFile(string s, string fileName){
-
+    cout << "saving.." << endl;
     //check if there is a name
     if (fileName == "") return 1;
 

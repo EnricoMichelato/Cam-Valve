@@ -38,13 +38,13 @@ ENRICengine * ENRICinitEngine(const int n, double reference_radius, double axle_
     return ret;
 }
 
-string ENRICdistributionToStringSVG(ENRICdistribution * distribution, bool quote, bool header){
+string ENRICdistributionToStringSVG(ENRICdistribution * distribution, double cxShaft, double cyShaft, bool quote, bool header){
 
     if(distribution == NULL) return "";
 
     string distributionSVG = "";
 
-    distributionSVG += ENRICtoStringSVG(distribution->cam);
+    distributionSVG += ENRICtoStringSVG(distribution->cam, cxShaft, cyShaft, false, false);
 
     Connection* conn = g_init_connection(distribution->gearCenter, distribution->gearLeft, 0);
 
@@ -53,7 +53,7 @@ string ENRICdistributionToStringSVG(ENRICdistribution * distribution, bool quote
     g_set_next_connection(&conn, conn2);
     
 
-    distributionSVG += "\n" + g_tostring_connection(conn);
+    distributionSVG += "\n" + g_tostring_connection(conn, cxShaft, cyShaft);
 
     if(header){
         distributionSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
@@ -61,8 +61,8 @@ string ENRICdistributionToStringSVG(ENRICdistribution * distribution, bool quote
     
     }
 
-
     return distributionSVG;
+
 }
 
 ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){ 
@@ -73,18 +73,19 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
 
     string sargv[argc];
     for(int i=0;i<argc;i++) sargv[i] = string(argv[i]);
-    // ./mainentry -device/engine -i /path_da_cui_importare -eq /path_dove_esportare -p <param>
+    // ./mainentry -device/engine -i /path_da_cui_importare -eq cx cy /path_dove_esportare -p <param>*6
     if(argc == 1) return NULL; //no params
 
     if(sargv[1] == "-h"){//help
         string help =   "--HELP\n"
-                        "Command format: ./mainentry -\"struct\" -i importPath -e/-eq/-ea (n T) exportPath -p params...\n"
+                        "Command format: ./mainentry -\"struct\" -i importPath -e/-eq/-ea (n T) cxShaft cyShaft exportPath -p params...\n"
                         "-\"struct\" must be device or distribution: define which one"
                         "-i import a struct from the file with path importPath\n"
                         "-e export a struct (-eq export with quotes, -ea export animated) on the file with path exportPath.\n"
                         "   The struct is taken from:\n"
                         "       an imported file called with the option -i (prioritized action)\n"
                         "       the one created with the params passed after the option -p (ignoerd if -i is called)\n"
+                        "   cxShaft cyShaft are the coordinates of the shaft's center on the SVG draw, needed only with device\n"
                         "-eq export a struct with quotes on the file with path exportPath (options as before)\n"
                         "-ea export a struct animated on the file with path exportPath\n"
                         "-p followed by the params of the struct to be exported (can't be called if -e or -eq isn't called before)\n"
@@ -113,14 +114,14 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 }
                 cout << "DEBUG: Import successful" << endl;
 
-                if(argc >= 6){ //requested import + export
+                if(argc >= 8){ //requested import + export
                     if(sargv[4] == "-e"){ //export
                         cout << "DEBUG: Exporting device on file " << sargv[7] << endl;
-                        ENRICsaveToFile(ENRICtoStringSVG(ret->device), sargv[7]);
+                        ENRICsaveToFile(ENRICtoStringSVG(ret->device, stod(sargv[5]), stod(sargv[6])), sargv[7]);
                     }
                     else if(sargv[4] == "-eq"){ //export with quotes
                         cout << "DEBUG: Exporting device with quotes on file " << sargv[7] << endl;
-                        ENRICsaveToFile(ENRICtoStringSVG(ret->device, true), sargv[7]);
+                        ENRICsaveToFile(ENRICtoStringSVG(ret->device, stod(sargv[5]), stod(sargv[6]), true), sargv[7]);
                     }
                     else if(sargv[4] == "-ea" && argc >= 10){ //export animated
                         cout << "DEBUG: Exporting device animated on file " << sargv[9] << endl;
@@ -135,7 +136,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 return ret;
             }
 
-            else if(argc >= 11){// only export with params
+            else if(argc >= 13){// only export with params
             // ./mainentry -device -i /path_da_cui_importare -eq /path_dove_esportare -p <param>*6
                 if(sargv[2] == "-e" || sargv[2] == "-eq"){ 
                     cout << "DEBUG: Exporting device with params on file " << sargv[5] << endl;
@@ -144,27 +145,27 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                         return NULL;
                     } 
 
-                    if(argc == 11) ret->device = ENRICinitDevice(stod(sargv[5]), stod(sargv[6]), stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]));
+                    if(argc == 13) ret->device = ENRICinitDevice(stod(sargv[5]), stod(sargv[6]), stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]));
 
                     if(ret->device == NULL) { //params don't match constraints
                         cout << "DEBUG: Unable to init device with the given params, see README and check the constraints" << endl;
                         return NULL;
                     } 
-                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICtoStringSVG(ret->device), sargv[5]);
-                    else if(sargv[2] == "-eq") ENRICsaveToFile(ENRICtoStringSVG(ret->device, true), sargv[5]);
+                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICtoStringSVG(ret->device, stod(sargv[3]), stod(sargv[4])), sargv[5]);
+                    else if(sargv[2] == "-eq") ENRICsaveToFile(ENRICtoStringSVG(ret->device, stod(sargv[3]), stod(sargv[4]), true), sargv[5]);
 
                     cout << "DEBUG: Export successful" << endl;
                     
                     return ret;
                 }
-                // ./mainentry -device -i /path_da_cui_importare -eq /path_dove_esportare -p <param>*6
+                // ./mainentry -device -i /path_da_cui_importare -eq cX cY/path_dove_esportare -p <param>*6
                 else if(sargv[2] == "-ea"){
-                    cout << "DEBUG: Exporting device animated with params on file " << sargv[3] << endl;
-                    if(sargv[4] != "-p"){ //params not found
+                    cout << "DEBUG: Exporting device animated with params on file " << sargv[7] << endl;
+                    if(sargv[8] != "-p"){ //params not found
                         cout << "DEBUG: Params not found or wrong syntax" << endl;
                         return NULL;
                     } 
-                    if(argc == 11) ret->device = ENRICinitDevice(stod(sargv[5]), stod(sargv[6]), stod(sargv[7]), stod(sargv[8]), stod(sargv[9]), stod(sargv[10]));
+                    if(argc == 14) ret->device = ENRICinitDevice(stod(sargv[9]), stod(sargv[10]), stod(sargv[11]), stod(sargv[12]), stod(sargv[13]), stod(sargv[14]));
 
                     if(ret->device == NULL) { //params don't match constraints
                         cout << "DEBUG: Unable to init device with the given params, see README and check the constraints" << endl;
@@ -181,7 +182,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
     }
 
     else if(sargv[1] == "-distribution"){//distribution
-    // ./mainentry -distribution -i /path_da_cui_importare -eq/ea /path_dove_esportare -p <param>*3
+    // ./mainentry -distribution -i /path_da_cui_importare -eq/ea cx cy /path_dove_esportare -p <param>*3
         if(argc >= 4){
             if(sargv[2] == "-i"){ //import
                 cout << "DEBUG: Importing distribution from " << sargv[3] << endl;
@@ -199,14 +200,16 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 }
                 cout << "DEBUG: Import successful" << endl;
 
-                if(argc >= 6){ //requested export
+    // ./mainentry -distribution -i /path_da_cui_importare -eq/ea cx cy /path_dove_esportare -p <param>*3
+
+                if(argc >= 8){ //requested export
                     if(sargv[4] == "-e"){ //export
-                        cout << "DEBUG: Exporting distribution on file " << sargv[5] << endl;
-                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, false, true), sargv[5]);
+                        cout << "DEBUG: Exporting distribution on file " << sargv[7] << endl;
+                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, stod(sargv[5]), stod(sargv[6]), false, true), sargv[5]);
                     }
                     else if(sargv[4] == "-eq"){ //export with quotes
-                        cout << "DEBUG: Exporting distribution with quotes on file " << sargv[5] << endl;
-                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true, true), sargv[5]);
+                        cout << "DEBUG: Exporting distribution with quotes on file " << sargv[7] << endl;
+                        ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, stod(sargv[5]), stod(sargv[6]), true, true), sargv[5]);
                     }
                     cout << "DEBUG: Export successful" << endl;
                 }
@@ -216,7 +219,7 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                 return ret;
             }
 
-            // ./mainentry -distribution -i /path_da_cui_importare -eq/ea /path_dove_esportare -p <param>*3
+            // ./mainentry -distribution -i /path_da_cui_importare -eq/ea cx cy /path_dove_esportare -p <param>*3
             else if(argc >= 8){
                 if(sargv[2] == "-e" || sargv[2] == "-eq"){ //export with params
                     cout << "DEBUG: Exporting distribution with params on file " << sargv[3] << endl;
@@ -231,8 +234,8 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
                         cout << "DEBUG: Unable to init distribution with the given params, see README and check the constraints" << endl;
                         return NULL;
                     } 
-                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, false, true), sargv[5]);
-                    else ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, true, true), sargv[5]);
+                    if(sargv[2] == "-e") ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, stod(sargv[6]), stod(sargv[7]), false, true), sargv[5]);
+                    else ENRICsaveToFile(ENRICdistributionToStringSVG(ret->distribution, stod(sargv[6]), stod(sargv[7]), true, true), sargv[5]);
                     cout << "DEBUG: Export successful" << endl;
                     
                     return ret;
@@ -241,4 +244,23 @@ ENRICcmdlineRet * ENRICcommandLineParam(int argc, char** argv){
         }
     }
     return NULL;
+}
+
+string ENRICengineToStringSVG(ENRICengine * engine, double cyShaft){
+    if(engine == NULL) return "";
+
+    string engineSVG = "";
+
+    for(int i=0; i<engine->n; i++){
+
+        double cxShaft = (1.2 + 4*i)*g_get_reference_radius(engine->distributions[i]->gearCenter);
+
+        engineSVG += ENRICdistributionToStringSVG(engine->distributions[1], cxShaft, cyShaft, false, false);
+
+    }
+
+    engineSVG = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n\n"
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\" >\n\n" + engineSVG + "</svg>\n";
+    
+    return engineSVG;
 }

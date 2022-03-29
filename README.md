@@ -56,10 +56,6 @@ The machine is made up of a Cam-Valve system, that is moved by a chain of gears.
 * `gearLeft`: pointer to a gear, it's the second gear of the chain.
 * `gearRight`: pointer to a gear, it's the third gear of the chain.
 
-#### Engine struct:
-* `n`: number of distributions.
-* `distributions`: array of pointers to distributions struct.
-
 #### Parameters:
 Using these parameters, multiple distributions are intialized and stored into the array of the engine struct:
 * `n`: number of distributions of the engine.
@@ -83,6 +79,15 @@ Parameters: `rMin`, `rMax`, `lenValve`, `diamValve`, `Alpha`, `Gamma` for device
 Example image:
 
 
-![](svg_example/Distribution.svg)
+![](svg_example/Connection.svg)
 
 ------
+
+#### Engine struct:
+* `n`: number of distributions.
+* `distributions`: array of pointers to distributions struct.
+
+Example image:
+
+
+![](svg_example/Engine.svg)
